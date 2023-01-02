@@ -1,16 +1,18 @@
 
-
 const express = require('express')
 const router = express.Router()
-const AuthorData = require('../controller/authorController/authorController');
-const AuthorData1=require('../controller/blogController/deleteBlogs');
+const AuthorController = require('../controller/authorContoller');
+const BlogController = require('../controller/blogController');
 
 
+router.post('/authors', AuthorController.createAuthor);
+router.post('/blogs' , BlogController.createBlog); 
+router.get('/blogs' , BlogController.getBlogs);
+router.put('/blogs/:blogId' , BlogController.updateBlog);
+router.delete('/blogs/:blogId' , BlogController.deleteBlog1);
+router.delete('/blogs' , BlogController.deleteBlog2);
 
 
-router.post('/authors', AuthorData.createAuthor)
-router.delete('/blogs/:blogId1',AuthorData1.deleteBlog1);
-router.delete('/blogs/:blogId2',AuthorData1.deleteBlog2);
 
 
 

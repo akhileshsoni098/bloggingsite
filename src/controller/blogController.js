@@ -13,6 +13,8 @@ const createBlog = async function (req, res) {
     try {
         const blogData = req.body;
         const authorId = blogData.authorId;
+if(Object.keys(blogData).length != 0){
+
         if (!authorId) {
             return res.status(400).send({ status: false, msg: "Author id is mandatory" });
         }
@@ -21,7 +23,9 @@ const createBlog = async function (req, res) {
             return res.status(404).send({ status: false, msg: "Invalid author id" });
         }
         const saveData = await blogModel.create(blogData);
+    
         return res.status(201).send({ status: true, msg: saveData });
+    } else {return res.status(400).send({status:false, msg: "invalaid request"})}
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message })
     }
@@ -62,7 +66,7 @@ const getBlogs = async function (req, res) {
 // - Check if the blogId exists (must have isDeleted false). If it doesn't, return an HTTP status 404 with a response body like [this](#error-response-structure)
 // - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
 // - Also make sure in the response you return the updated blog document.
-const update = async function (req, res) {
+const updateBlog = async function (req, res) {
 
     try {
 
@@ -109,22 +113,35 @@ const update = async function (req, res) {
 // If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
 const deleteBlog1 = async function (req, res) {
-    try {
-        const body = req.params.blogId;
-        const checkBlogId = await blogModel.findById(body);
-        if(!isValidObjectId || !checkBlogId)
-        {
-            return res.status(404).send({status:false,msg:"Blog Id is Invalid"});
-        }
-        
-        if (isDeleted == false) {
-            const updateDelete = await blogModel.findOneAndUpdate({ _id: body }, { $set: { isDeleted: true } }, { new: true });
-        };
 
-        return res.status(200).send(" ");
-    }
-    catch (error) {
-        res.status(500).send({ status: false, msg: error.message });
+    try{
+
+  const blogId = req.params.blogId;
+
+  if(!isValidObjectId(blogId)){
+
+    return res.status(404).send({status: false , msg: "blog id is not valid"})
+  
+}
+
+  const checkBlogId = await blogModel.findById(blogId)
+
+  if (!checkBlogId || checkBlogId.isDeleted == true){
+
+return res.satus(404).send({status:false , msg: "blog already deleted" })
+
+  }
+
+const deleteBlog = await blogModel.findOneAndUpdate({_id: blogId}, 
+
+    {$set:{isDeleted:true ,deletedAt:Date.now}})
+
+return res.status(200).send({status: true , msg: "Successfully Deleted"})
+
+    } catch (err){
+
+        res.status(500).send({status:false , msg: err.message})
+   
     }
 
 }
@@ -134,26 +151,30 @@ const deleteBlog1 = async function (req, res) {
 // If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
 const deleteBlog2 = async function (req, res) {
-    const body = req.query;
-    const { category, authorId, tags, subcategory, isPublished } = body;
+
+    try{
+
+        const data = req.query
    
-
-
-
-
-
-
-    if(isPublished == false)
-    {
-    const Filterdoc = await blogModel.find(body);
-
-    const deletedData= await blogModel.findOneAndDelete(Filterdoc)
+    if (Object.keys(data).length == 0){
+        return res.status(404).send({status: false , msg: "Invlaid Request"})
     }
-   
-
+        const blogData = await blogModel.findOneAndUpdate({...data},
+          {$set: {isDeleted:true}}, {new:true}  )
+res.status(200).send({status:true, msg: "data has succcessfully deleted"})
+    } catch (err){
+    
+        res.status(500).send({status:false , msg:err.message})
+    }
 }
 
-moduule.exports = { deleteBlog1, deleteBlog2, createBlog, getBlogs, update };
+    
+    
+   
+
+
+
+module.exports = { deleteBlog1, deleteBlog2, createBlog, getBlogs, updateBlog };
 
 
 //const blog = await BlogModel.findOneAndUpdate({_id:blogId,isDeleted:false,isPublished:true}, {title:data.title,body:data.body,$push: {tags:data.tags,subcategory:data.subcategory},category:data.category}, { new: true })
