@@ -2,7 +2,7 @@
 
 const express = require('express')
 const router = express.Router()
-const AuthorData = require('../controller/authorContro')
+const AuthorData = require('../controller/authorController')
 
 
 
