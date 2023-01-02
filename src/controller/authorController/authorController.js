@@ -1,6 +1,6 @@
 
-const { create } = require('../model/authorModel')
-const authorModel = require('../model/authorModel')
+
+const authorModel = require('../../model/authorModel')
 
 const createAuthor = async function (req ,res) {
     let authorData = req.body
