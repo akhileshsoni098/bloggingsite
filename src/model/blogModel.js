@@ -20,12 +20,12 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     subcategory: mongoose.Schema.Types.Mixed,
-    deletedAt: Date.now(),
+    deletedAt: Date,
     isDeleted: {
         type: Boolean,
         default: false
     },
-    publishedAt: Date.now(),
+    publishedAt: Date,
     isPublished: {
         type: Boolean,
         default: false
