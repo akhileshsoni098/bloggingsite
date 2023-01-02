@@ -21,7 +21,7 @@ Repository for backend cohort - Californium
 - Create a author document from request body.
   `Endpoint: BASE_URL/authors`
 
-### POST /blogs
+### POST /blogs  prasant ji
 - Create a blog document from request body. Get authorId in request body only.
 - Make sure the authorId is a valid authorId by checking the author exist in the authors collection.
 - Return HTTP status 201 on a succesful blog creation. Also return the blog document. The response should be a JSON object like [this](#successful-response-structure) 
@@ -29,7 +29,7 @@ Repository for backend cohort - Californium
 
 - Return HTTP status 400 for an invalid request with a response body like [this](#error-response-structure)
 
-### GET /blogs
+### GET /blogs  tapaswee ji
 - Returns all blogs in the collection that aren't deleted and are published
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
@@ -40,14 +40,14 @@ Repository for backend cohort - Californium
   - List of blogs that have a specific subcategory
 example of a query url: blogs?filtername=filtervalue&f2=fv2
 
-### PUT /blogs/:blogId
+### PUT /blogs/:blogId  Akhilesh ji
 - Updates a blog by changing the its title, body, adding tags, adding a subcategory. (Assuming tag and subcategory received in body is need to be added)
 - Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
 - Check if the blogId exists (must have isDeleted false). If it doesn't, return an HTTP status 404 with a response body like [this](#error-response-structure)
 - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
 - Also make sure in the response you return the updated blog document. 
 
-### DELETE /blogs/:blogId
+### DELETE /blogs/:blogId  pallavi Ji
 - Check if the blogId exists( and is not deleted). If it does, mark it deleted and return an HTTP status 200 without any response body.
 - If the blog document doesn't exist then return an HTTP status of 404 with a body like [this](#error-response-structure) 
 
