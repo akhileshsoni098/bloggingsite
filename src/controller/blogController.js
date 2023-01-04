@@ -1,4 +1,4 @@
-const authorModel=require('../model/authorModel');
+const authorModel = require('../model/authorModel');
 const blogModel = require('../model/blogModel');
 const { isValidObjectId } = require("mongoose");
 
@@ -58,6 +58,7 @@ const createBlog = async function (req, res) {
 const getBlogs = async function (req, res) {
     try {
         let data = req.query
+
         if (Object.keys(data).length != 0) {
             const { authorId, category, tags, subcategory } = data;
             data["isDeleted"] = false;
@@ -70,7 +71,7 @@ const getBlogs = async function (req, res) {
 
             return res.status(200).send({ status: true, data: blogs });
         } else {
-            return res.status(404).send("Please Give valid Data !! ")
+            return res.status(400).send("Please Give valid Data !! ")
         }
 
     } catch (err) {
@@ -146,7 +147,7 @@ const deleteBlog = async function (req, res) {
             );
             return res.status(200).send({ status: true, msg: "Successfully Deleted" });
         } else {
-            return res.status(404).send("Please enter valid information !!")
+            return res.status(400).send("Please enter valid information !!")
         }
     } catch (err) {
         res.status(500).send({ status: false, msg: err.message });
@@ -158,30 +159,22 @@ const deleteBlog = async function (req, res) {
 // If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
 const deleteBlogByFilter = async function (req, res) {
-
     try {
-
         const ReqData = req.query;
         if (Object.keys(ReqData).length != 0) {
-            if (!isValidObjectId(ReqData.authorId)) {
-                return res.status(404).send({ status: false, msg: "Enter Vaild Author Id " })
-            };
+
             const DeleteBlog = await blogModel.updateMany({ ...ReqData, isDeleted: false }, { $set: { isDeleted: true } }, { new: true });
             if (Object.keys(DeleteBlog).length == 0 || DeleteBlog.isDeleted == true) {
                 return res.status(404).send({ status: false, msg: "Data Not Found" });
-            } else {
-
+            }
+            else {
                 return res.status(200).send({ status: true, msg: "Data Deleted Sucessfully !!" });
             };
         } else {
-            return res.status(404).send("Please enter required Data !!")
+            return res.status(400).send("Please enter required Data !!")
         }
-
     } catch (err) {
         res.status(500).send({ status: false, msg: err.message });
-
     }
 }
-
-
 module.exports = { deleteBlog, deleteBlogByFilter, createBlog, getBlogs, updateBlog };
