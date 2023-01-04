@@ -7,7 +7,6 @@ const { isValidObjectId } = require("mongoose");
 // Return HTTP status 201 on a succesful blog creation. Also return the blog document. The response should be a JSON object like this
 // Create atleast 5 blogs for each author
 // Return HTTP status 400 for an invalid request with a response body like this
-
 const createBlog = async function (req, res) {
     try {
         const blogData = req.body;

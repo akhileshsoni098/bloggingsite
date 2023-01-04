@@ -35,17 +35,20 @@ const authorQueryAuthorisation = async function (req, res, next) {
     try {
         const authorVerified = req.decodedToken.authorId;
         const authorQuery = req.query;
+        if(Object.keys(authorQuery).length != 0){
         const blogData = await blogModel.find(authorQuery);
         const validAuthor = blogData.filter(ele => ele.authorId.toString() == authorVerified)
-        console.log(validAuthor);
         if (!validAuthor) {
             return res.send({ status: true, msg: "Author not authorised" })
         }
         if (validAuthor) {
             next()
         }
+    }else{
+        return res.status(400).send({status: false, msg:"Please provide valid Information !!"});
+    }
     } catch (err) {
-        res.status(500).send({ status: false, msgtry1: err.message })
+        res.status(500).send({ status: false, msg: err.message })
     }
 }
 
@@ -55,6 +58,7 @@ const authorParamAuthorisation = async function (req, res, next) {
     try {
         const authorVerified = req.decodedToken.authorId;
         let blogID = req.params.blogId;
+        if(Object.keys(req.params).length != 0){
         if (!blogID) {
             return res.status(400).send({ status: false, msg: "Blog ID is Required !!" })
         }
@@ -66,8 +70,11 @@ const authorParamAuthorisation = async function (req, res, next) {
             }
             next();
         }
+    }else{
+        return res.status(400).send({status: false, msg:"Please provide valid Information !!"});
+    }
     } catch (err) {
-        res.status(500).send({ status: false, msgtry2: err.message })
+        res.status(500).send({ status: false, msg: err.message })
     }
 }
 module.exports = { authorAuthentication, authorParamAuthorisation, authorQueryAuthorisation };
