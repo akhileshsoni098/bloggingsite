@@ -52,7 +52,7 @@ const authorQueryAuthorisation = async function (req, res, next) {
             return res.status(400).send({ status: false, msg: "Please provide valid Information !!" });
         }
     } catch (err) {
-        res.status(500).send({ status: false, msgtry: err.message })
+        res.status(500).send({ status: false, msg: err.message })
     }
 }
 
@@ -82,7 +82,7 @@ const authorParamAuthorisation = async function (req, res, next) {
             return res.status(400).send({ status: false, msg: "Please provide valid Information !!" });
         }
     } catch (err) {
-        res.status(500).send({ status: false, msgtry: err.message })
+        res.status(500).send({ status: false, msg: err.message })
     }
 }
 module.exports = { authorAuthentication, authorParamAuthorisation, authorQueryAuthorisation };
