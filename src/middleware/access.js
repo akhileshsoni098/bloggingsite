@@ -1,11 +1,6 @@
 const jwt = require('jsonwebtoken');
 const blogModel = require("../model/blogModel");
-
-// Add an authorisation implementation for the JWT token that validates the token before every protected endpoint is called. 
-//If the validation fails, return a suitable error message with a corresponding HTTP status code
-// Protected routes are create a blog, edit a blog, get the list of blogs, delete a blog(s)
-// Set the token, once validated, in the request - x-api-key
-// Use a middleware for authentication purpose.
+const { isValidObjectId } = require("mongoose");
 
 const authorAuthentication = function (req, res, next) {
     try {
@@ -16,7 +11,7 @@ const authorAuthentication = function (req, res, next) {
         jwt.verify(token, 'team@ak#tapas#Pu#pra#342@', function (err, decoded) { //callback function
 
             if (err) {
-                return res.status(401).send({ status: false, msg: "User is not varified ! " });
+                return res.status(401).send({ status: false, msg: "Invalid Token !! Please Login Again..." });
             }
             else {
                 req.decodedToken = decoded
@@ -29,52 +24,65 @@ const authorAuthentication = function (req, res, next) {
 
 }
 
-// Make sure that only the owner of the blogs is able to edit or delete the blog.
-// In case of unauthorized access return an appropirate error message.***For Query****
 const authorQueryAuthorisation = async function (req, res, next) {
     try {
         const authorVerified = req.decodedToken.authorId;
         const authorQuery = req.query;
-        if(Object.keys(authorQuery).length != 0){
-        const blogData = await blogModel.find(authorQuery);
-        const validAuthor = blogData.filter(ele => ele.authorId.toString() == authorVerified)
-        if (!validAuthor) {
-            return res.send({ status: true, msg: "Author not authorised" })
+        const authorID=authorQuery.authorId;
+        if (Object.keys(authorQuery).length != 0) {
+            if (authorQuery.authorId && !isValidObjectId(authorQuery.authorId)) {
+                return res.status(400).send({ status: false, msg: "Invalid Author Id..." });
+            };
+            if(authorQuery.authorId && isValidObjectId(authorQuery.authorId))
+            {
+            const check = await blogModel.findOne({ authorId:authorID });
+            if (!check) {
+                return res.status(404).send({ status: false, msg: "Entered wrong authorId..." });
+            };
         }
-        if (validAuthor) {
-            next()
+            const blogData = await blogModel.find(authorQuery);
+            const validAuthor = blogData.filter(ele => ele.authorId.toString() == authorVerified)
+            if (!validAuthor) {
+                return res.status(403).send({ status: true, msg: "Author is not authorised" })
+            }
+            if (validAuthor) {
+                next()
+            }
+        } else {
+            return res.status(400).send({ status: false, msg: "Please provide valid Information !!" });
         }
-    }else{
-        return res.status(400).send({status: false, msg:"Please provide valid Information !!"});
-    }
     } catch (err) {
-        res.status(500).send({ status: false, msg: err.message })
+        res.status(500).send({ status: false, msgtry: err.message })
     }
 }
 
-// Make sure that only the owner of the blogs is able to edit or delete the blog.
-// In case of unauthorized access return an appropirate error message.****For Param***
 const authorParamAuthorisation = async function (req, res, next) {
     try {
         const authorVerified = req.decodedToken.authorId;
         let blogID = req.params.blogId;
-        if(Object.keys(req.params).length != 0){
-        if (!blogID) {
-            return res.status(400).send({ status: false, msg: "Blog ID is Required !!" })
-        }
-        if (blogID) {
+        if (Object.keys(req.params).length != 0) {
+            if (!blogID) {
+                return res.status(400).send({ status: false, msg: "Blog ID is Required !!" })
+            }
+            if (!isValidObjectId(blogID)) {
+                return res.status(404).send({ status: false, msg: "Enter Vaild blogId.." });
+            }
+            const Id = await blogModel.findOne({ _id: blogID })
+            if (!Id) {
+                return res.status(404).send({ status: false, msg: "Entered wrong blogId .." });
+            }
             let blogs = await blogModel.findById(blogID).select({ authorId: 1, _id: 0 });
             let authorId = blogs.authorId;
             if (authorId != authorVerified.toString()) {
                 return res.status(403).send({ status: false, msg: "Author not authorised !!" });
             }
             next();
+
+        } else {
+            return res.status(400).send({ status: false, msg: "Please provide valid Information !!" });
         }
-    }else{
-        return res.status(400).send({status: false, msg:"Please provide valid Information !!"});
-    }
     } catch (err) {
-        res.status(500).send({ status: false, msg: err.message })
+        res.status(500).send({ status: false, msgtry: err.message })
     }
 }
 module.exports = { authorAuthentication, authorParamAuthorisation, authorQueryAuthorisation };

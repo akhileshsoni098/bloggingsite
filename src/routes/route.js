@@ -6,12 +6,11 @@ const middleware = require('../middleware/access');
 
 
 router.post('/authors', AuthorController.createAuthor);
-router.post('/blogs', BlogController.createBlog);
+router.post('/blogs', middleware.authorAuthentication,BlogController.createBlog);
 router.get('/blogs', middleware.authorAuthentication, BlogController.getBlogs);
 router.put('/blogs/:blogId', middleware.authorAuthentication, middleware.authorParamAuthorisation, BlogController.updateBlog);
 router.delete('/blogs/:blogId', middleware.authorAuthentication, middleware.authorParamAuthorisation, BlogController.deleteBlog);
 router.delete('/blogs', middleware.authorAuthentication, middleware.authorQueryAuthorisation, BlogController.deleteBlogByFilter);
 router.post('/login', AuthorController.logInAuthor);
-
 
 module.exports = router;

@@ -18,7 +18,6 @@ const createAuthor = async function (req, res) {
             if(!authorData.email){
                 return res.status(400).send({status:false , msg:"Invalid request , email is required."});
             }
-            const uniqueEmail= await author
             if(!emailValidator.validate(authorData.email)){
                 return res.status(400).send({status:false , msg:"Invalid email"});
             }
@@ -48,7 +47,7 @@ const logInAuthor = async function (req, res) {
                return res.status(401).send({ status: false, msg: "Email or password is Incorrect or missing." });
             }
             const token = jwt.sign({ authorId: author._id.toString() }, "team@ak#tapas#Pu#pra#342@");
-            res.header("x-api-key", token);//creating header in response body
+        
             return res.status(201).send({ status: true, data: { "token": token } });
             
         } else {
