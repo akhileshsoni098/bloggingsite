@@ -1,9 +1,22 @@
+//============================= Importing author model ==============================================
+
+
 const authorModel = require('../model/authorModel');
+
+// ==================== Installed external library to validate email ==========================================
+
 const emailValidator = require("email-validator");
+
+//=========================== Installed jwtwebtoken to authenticate & aurthorize the user ======================
+
 const jwt = require('jsonwebtoken');
+
+//====================**Using Regex for validation purpose**====================================================
 
 let nameRegex = /^[a-zA-Z]{1,20}$/
 let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
+//============================ Post API Resistration with validations ==============================================
 
 const createAuthor = async function (req, res) {
     try {
@@ -66,6 +79,9 @@ const createAuthor = async function (req, res) {
     }
 }
 
+
+// ================================ Genrating unique security token after login =============================================
+
 const logInAuthor = async function (req, res) {
     try {
         let data = req.body;
@@ -76,6 +92,10 @@ const logInAuthor = async function (req, res) {
             if (!author) {
                 return res.status(401).send({ status: false, msg: "Email or password is Incorrect or missing." });
             }
+
+
+//============================= genrating token with some credantial by secrete-key ===================================
+
             const token = jwt.sign({ authorId: author._id.toString() }, "team@ak#tapas#Pu#pra#342@");
             res.header("x-api-key",token);
             return res.status(201).send({ status: true, data: { "token": token } });
@@ -87,5 +107,9 @@ const logInAuthor = async function (req, res) {
         res.status(500).send({ status: false, msg: err.message });
     }
 }
+
+// =========================== exporting all function of this author controller logic module ============================================================
+
+
 module.exports.createAuthor = createAuthor;
 module.exports.logInAuthor = logInAuthor;

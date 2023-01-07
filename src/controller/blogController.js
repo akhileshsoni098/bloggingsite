@@ -1,6 +1,16 @@
+
+//============================= Importing models author & blog ==============================================
+
 const authorModel = require("../model/authorModel");
+
+
 const blogModel = require("../model/blogModel");
+
+//================================ To validate unique Object id ============================================
+
 const { isValidObjectId } = require("mongoose");
+
+//==================================== Post API blogs creation ===========================================
 
 const createBlog = async function (req, res) {
     try {
@@ -42,6 +52,9 @@ const createBlog = async function (req, res) {
     }
 };
 
+
+//============================== Get API to fetch the blog data ========================================================
+
 const getBlogs = async function (req, res) {
     try {
         let data = req.query;
@@ -64,6 +77,9 @@ const getBlogs = async function (req, res) {
         res.status(500).send({ status: false, msg: err.message });
     }
 };
+
+// ====================================== Put API Update the blog data =========================================================
+
 
 const updateBlog = async function (req, res) {
     try {
@@ -93,6 +109,12 @@ const updateBlog = async function (req, res) {
     }
 };
 
+
+
+// ======================================= Delete API delete data by blog Id ============================================================
+
+
+
 const deleteBlog = async function (req, res) {
     try {
         const blogId = req.params.blogId;
@@ -117,6 +139,12 @@ const deleteBlog = async function (req, res) {
     }
 };
 
+
+
+//================================== Delete API delete data by filter/searches =============================================
+
+
+
 const deleteBlogByFilter = async function (req, res) {
     try {
         const ReqData = req.query;
@@ -133,4 +161,7 @@ const deleteBlogByFilter = async function (req, res) {
         res.status(500).send({ status: false, msg: err.message });
     }
 };
+
+// =========================== exporting all function of this blog controller logic module ============================================
+
 module.exports = { deleteBlog, deleteBlogByFilter, createBlog, getBlogs, updateBlog };

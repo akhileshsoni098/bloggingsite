@@ -1,6 +1,20 @@
+
+
+//=========================== Installed jwtwebtoken to authenticate & aurthorize the user ======================
+
 const jwt = require('jsonwebtoken');
+
+//============================= Importing blog model ==============================================
+
 const blogModel = require("../model/blogModel");
+
+
+//================================ To validate unique Object id ============================================
+
 const { isValidObjectId } = require("mongoose");
+
+
+// ========================= Authentication With jwt token ============================================================
 
 const authorAuthentication = function (req, res, next) {
     try {
@@ -8,6 +22,10 @@ const authorAuthentication = function (req, res, next) {
         if (!token) {
             return res.status(400).send({ status: false, msg: "Header token is required !" });
         }
+
+
+        //============================== Token Verification ===========================================
+
         jwt.verify(token, 'team@ak#tapas#Pu#pra#342@', function (err, decoded) { //callback function
             if (err) {
                 return res.status(401).send({ status: false, msg: "Invalid Token !! Please Login Again..." });
@@ -22,6 +40,9 @@ const authorAuthentication = function (req, res, next) {
     }
 
 }
+
+// ======================= Authorisation With Token ==============================================
+
 
 const authorQueryAuthorisation = async function (req, res, next) {
     try {
@@ -55,6 +76,10 @@ const authorQueryAuthorisation = async function (req, res, next) {
     }
 }
 
+
+// ======================= Authorisation With Token ==============================================
+
+
 const authorParamAuthorisation = async function (req, res, next) {
     try {
         const authorVerified = req.decodedToken.authorId;
@@ -84,4 +109,7 @@ const authorParamAuthorisation = async function (req, res, next) {
         res.status(500).send({ status: false, msg: err.message })
     }
 }
+
+// ==============================Exporting function from this logic module ================================
+
 module.exports = { authorAuthentication, authorParamAuthorisation, authorQueryAuthorisation };
