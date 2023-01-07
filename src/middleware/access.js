@@ -9,7 +9,6 @@ const authorAuthentication = function (req, res, next) {
             return res.status(400).send({ status: false, msg: "Header token is required !" });
         }
         jwt.verify(token, 'team@ak#tapas#Pu#pra#342@', function (err, decoded) { //callback function
-
             if (err) {
                 return res.status(401).send({ status: false, msg: "Invalid Token !! Please Login Again..." });
             }
