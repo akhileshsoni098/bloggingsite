@@ -90,14 +90,14 @@ const logInAuthor = async function (req, res) {
         if (Object.keys(data).length != 0) {
             let author = await authorModel.findOne({ email: email, password: password });
             if (!author) {
-                return res.status(401).send({ status: false, msg: "Email or password is Incorrect or missing." });
+                return res.status(400).send({ status: false, msg: "Email or password is Incorrect or missing." });
             }
 
 
 //============================= genrating token with some credantial by secrete-key ===================================
 
             const token = jwt.sign({ authorId: author._id.toString() }, "team@ak#tapas#Pu#pra#342@");
-            res.header("x-api-key",token);
+           
             return res.status(201).send({ status: true, data: { "token": token } });
 
         } else {

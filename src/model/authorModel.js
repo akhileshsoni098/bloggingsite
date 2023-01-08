@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// ================== **This is what how our blog model will look like**==================================
+// ================== **This is what how our author model will look like**==================================
 
 const authorSchema = new mongoose.Schema({
     fname:
